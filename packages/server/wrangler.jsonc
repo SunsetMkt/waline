@@ -30,6 +30,41 @@
   ],
 
   // ---------------------------------------------------------------------------
+  // Module aliases – replace packages that use Node.js internals not available
+  // in the Workers runtime even with nodejs_compat.
+  // ---------------------------------------------------------------------------
+  "alias": {
+    // iconv-lite@0.4.x tries to require its stream helpers at startup, which
+    // crashes because esbuild replaces ./lib/streams with `false` (the browser
+    // field in iconv-lite's package.json).  Our stub provides the same API
+    // surface using the global TextDecoder instead.
+    "iconv-lite": "./src/stubs/iconv-lite.js",
+
+    // any-promise has a browser shim that references `window.Promise`.  CF
+    // Workers do not expose `window`, so we stub it with the global Promise.
+    "any-promise": "./src/stubs/any-promise.js",
+
+    // think-trace uses __dirname at module-init time to locate error-page
+    // templates.  esbuild does not inject __dirname inside CJS wrappers for
+    // worker targets, causing a startup crash.  Our stub is a no-op middleware
+    // which is safe because we don't expose stack traces in Workers anyway.
+    "think-trace": "./src/stubs/think-trace.js"
+  },
+
+  // ---------------------------------------------------------------------------
+  // esbuild define – inject Node.js globals that are not available in Workers.
+  // ---------------------------------------------------------------------------
+  "define": {
+    // esbuild bundles for browser/worker targets and does not inject __dirname
+    // into CJS module wrappers.  Defining it as an empty string prevents
+    // ReferenceError crashes in third-party packages (e.g. thinkjs/lib/loader,
+    // think-trace) that read __dirname at module-init time.  index.js detects
+    // the empty value and falls back to process.cwd() for runtime resolution.
+    "__dirname": "\"\"",
+    "__filename": "\"worker.js\""
+  },
+
+  // ---------------------------------------------------------------------------
   // Environment variables
   // ---------------------------------------------------------------------------
   "vars": {

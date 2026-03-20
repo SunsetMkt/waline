@@ -59,7 +59,10 @@ function createNodeRequest(webRequest, url, bodyBuffer) {
 function createNodeResponse() {
   const chunks = [];
   const headers = {};
+  // statusCode is tracked via a getter/setter so that Koa's direct assignment
+  // (`res.statusCode = 404`) is captured by the `end()` closure.
   let statusCode = 200;
+  let headersSent = false;
   let resolveResponse;
 
   const responsePromise = new Promise((resolve) => {
@@ -67,8 +70,17 @@ function createNodeResponse() {
   });
 
   const res = {
-    statusCode,
-    headersSent: false,
+    get statusCode() {
+      return statusCode;
+    },
+    set statusCode(code) {
+      statusCode = Number(code);
+    },
+
+    get headersSent() {
+      return headersSent;
+    },
+
     finished: false,
     writable: true,
 
@@ -96,14 +108,13 @@ function createNodeResponse() {
       if (typeof message === 'object' && message !== null) {
         hdrs = message;
       }
-      statusCode = code;
-      res.statusCode = code;
+      statusCode = Number(code);
       if (hdrs) {
         for (const [k, v] of Object.entries(hdrs)) {
           res.setHeader(k, v);
         }
       }
-      res.headersSent = true;
+      headersSent = true;
     },
 
     write(data, encoding, callback) {

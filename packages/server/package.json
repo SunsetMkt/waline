@@ -59,7 +59,8 @@
   },
   "devDependencies": {
     "dotenv": "17.3.1",
-    "think-watcher": "3.0.4"
+    "think-watcher": "3.0.4",
+    "wrangler": "^4.76.0"
   },
   "engines": {
     "node": ">=20"

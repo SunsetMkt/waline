@@ -7,10 +7,18 @@ const Loader = require('thinkjs/lib/loader');
 module.exports = function main(configParams = {}) {
   const { env, ...config } = configParams;
 
+  // `__dirname` is not injected by esbuild when bundling for Cloudflare
+  // Workers (browser/worker target).  Fall back to process.cwd() so that
+  // the ThinkJS application can locate its source tree in `wrangler dev`
+  // (local dev), and still satisfies the non-empty ROOT_PATH assertion in
+  // deployed Workers (where filesystem access fails gracefully anyway).
+  // eslint-disable-next-line no-undef
+  const baseDir = (typeof __dirname !== 'undefined' && __dirname) || process.cwd();
+
   const app = new Application({
-    ROOT_PATH: __dirname,
-    APP_PATH: path.join(__dirname, 'src'),
-    VIEW_PATH: path.join(__dirname, 'view'),
+    ROOT_PATH: baseDir,
+    APP_PATH: path.join(baseDir, 'src'),
+    VIEW_PATH: path.join(baseDir, 'view'),
     RUNTIME_PATH: path.join(os.tmpdir(), 'runtime'),
     proxy: true, // use proxy
     env: env || 'vercel',
