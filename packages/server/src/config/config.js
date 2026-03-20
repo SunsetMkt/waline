@@ -12,6 +12,7 @@ const {
   POSTGRES_PASSWORD,
   MONGO_DB,
   MONGO_PASSWORD,
+  CLOUDFLARE_D1,
   FORBIDDEN_WORDS,
   TCB_ENV,
   TENCENTCLOUD_SECRETKEY,
@@ -71,6 +72,8 @@ if (LEAN_KEY) {
 } else if (GITHUB_TOKEN) {
   storage = 'github';
   jwtKey = jwtKey || GITHUB_TOKEN;
+} else if (CLOUDFLARE_D1) {
+  storage = 'cloudflare-d1';
 } else if (think.env === 'cloudbase' || TCB_ENV) {
   storage = 'cloudbase';
   jwtKey = jwtKey || TENCENTCLOUD_SECRETKEY || TCB_KEY || TCB_ENV;

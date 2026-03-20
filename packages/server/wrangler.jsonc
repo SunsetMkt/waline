@@ -1,0 +1,51 @@
+{
+  // Cloudflare Workers configuration for Waline.
+  // See https://developers.cloudflare.com/workers/wrangler/configuration/
+
+  "name": "waline",
+  "main": "./worker.js",
+
+  // Enable Node.js built-in modules (path, stream, crypto, …) inside the
+  // worker runtime.
+  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2026-03-20",
+
+  // ---------------------------------------------------------------------------
+  // Cloudflare D1 (SQLite-compatible) database binding.
+  //
+  // Before deploying:
+  //   1. Create a D1 database:
+  //        wrangler d1 create waline
+  //   2. Copy the "database_id" printed by the command into the field below.
+  //   3. Apply the Waline schema to the new database:
+  //        wrangler d1 execute waline --file=./migrations/d1.sql
+  // ---------------------------------------------------------------------------
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_name": "waline",
+      // Replace with the actual ID returned by `wrangler d1 create waline`.
+      "database_id": "<your-d1-database-id>"
+    }
+  ],
+
+  // ---------------------------------------------------------------------------
+  // Environment variables
+  // ---------------------------------------------------------------------------
+  "vars": {
+    // Setting CLOUDFLARE_D1=1 tells Waline's config layer to use the D1
+    // storage adapter instead of any other backend.
+    "CLOUDFLARE_D1": "1",
+
+    // Optional: customise the table-name prefix (default: "wl_").
+    // "D1_PREFIX": "wl_",
+
+    // JWT secret used to sign admin tokens.  Set this via a Wrangler secret
+    // rather than a plain-text var:
+    //   wrangler secret put JWT_TOKEN
+    // "JWT_TOKEN": ""
+
+    // Uncomment and fill in any additional Waline environment variables that
+    // your deployment requires (SMTP, Akismet, etc.).
+  }
+}
