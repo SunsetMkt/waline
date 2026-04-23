@@ -1,0 +1,31 @@
+{
+  // Cloudflare Workers configuration for Waline comment system
+  "name": "waline-workers",
+  "main": "src/index.js",
+  "compatibility_date": "2026-03-20",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // D1 database binding
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "waline",
+      "database_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    }
+  ],
+
+  // Environment variables (set in Cloudflare dashboard for production)
+  "vars": {
+    "JWT_TOKEN": "",
+    "SITE_NAME": "Waline",
+    "SITE_URL": "",
+    "SECURE_DOMAINS": "",
+    "DISABLE_USERAGENT": "",
+    "DISABLE_REGION": "",
+    "FORBIDDEN_WORDS": "",
+    "AVATAR_PROXY": "",
+    "MARKDOWN_HIGHLIGHT": "",
+    "MARKDOWN_EMOJI": "",
+    "COMMENT_AUDIT": ""
+  }
+}
