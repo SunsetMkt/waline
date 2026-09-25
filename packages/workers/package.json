@@ -1,0 +1,39 @@
+{
+  "name": "@waline/workers",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers server for waline comment system",
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "waline"
+  ],
+  "license": "MIT",
+  "author": "lizheming <i@imnerd.org>",
+  "repository": {
+    "url": "https://github.com/walinejs/waline",
+    "directory": "packages/workers"
+  },
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:server": "node test-server.mjs"
+  },
+  "dependencies": {
+    "hono": "^4.7.11",
+    "jsonwebtoken": "^9.0.3",
+    "markdown-it": "^14.1.1",
+    "markdown-it-emoji": "^3.0.0",
+    "phpass": "^0.1.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250620.0",
+    "@hono/node-server": "^1.14.4",
+    "better-sqlite3": "^11.10.0",
+    "vitest": "4.0.18",
+    "wrangler": "^4.23.0"
+  }
+}
